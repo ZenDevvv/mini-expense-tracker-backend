@@ -1,6 +1,8 @@
 import express from "express";
 import mysql from "mysql2";
 import cors from "cors";
+require('dotenv').config();
+
 
 const app = express();
 const PORT = 17863;
@@ -8,18 +10,12 @@ const PORT = 17863;
 app.use(express.json());
 app.use(cors());
 
-// const db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",
-//   password: "password",
-//   database: "mini_expense_tracker",
-// });
 
 const db = mysql.createConnection({
-  host: "mysql-1be540c5-mini-expenses-tracker.c.aivencloud.com",
-  user: "avnadmin",
-  password: "AVNS_7WinXZ8edS1Vjp7IKoQ",
-  database: "defaultdb",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 app.get("/", (req, res) => {
