@@ -3,15 +3,23 @@ import mysql from "mysql2";
 import cors from "cors";
 
 const app = express();
+const PORT = 17863;
 
 app.use(express.json());
 app.use(cors());
 
+// const db = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "password",
+//   database: "mini_expense_tracker",
+// });
+
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "password",
-  database: "mini_expense_tracker",
+  host: "mysql-1be540c5-mini-expenses-tracker.c.aivencloud.com",
+  user: "avnadmin",
+  password: "AVNS_7WinXZ8edS1Vjp7IKoQ",
+  database: "defaultdb",
 });
 
 app.get("/", (req, res) => {
@@ -163,6 +171,6 @@ app.put("/edit/:id", (req, res) => {
 
 });
 
-app.listen(8800, () => {
+app.listen(process.env.PORT || PORT, () => {
   console.log("Backend Connected");
 });
