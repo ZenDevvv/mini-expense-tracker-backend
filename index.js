@@ -9,7 +9,11 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
+
+app.use(cors({
+  origin: 'https://mini-expenses-tracker.netlify.app'
+}));
 
 const PORT = 17863;
 const db = mysql.createConnection({
