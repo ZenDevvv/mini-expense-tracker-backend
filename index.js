@@ -19,6 +19,14 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
+db.connect((err) => {
+  if (err) {
+    console.error("Database connection failed:", err);
+    return;
+  }
+  console.log("Database connected successfully.");
+});
+
 app.get("/", (req, res) => {
   const q =
     "SELECT *, 'budget' AS source FROM budget_list UNION SELECT *, 'expenses' AS source FROM expenses_list ORDER BY date DESC LIMIT 15";
