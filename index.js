@@ -1,16 +1,17 @@
 import express from "express";
 import mysql from "mysql2";
 import cors from "cors";
-require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
 const app = express();
-const PORT = 17863;
 
 app.use(express.json());
 app.use(cors());
 
-
+const PORT = 17863;
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -170,3 +171,7 @@ app.put("/edit/:id", (req, res) => {
 app.listen(process.env.PORT || PORT, () => {
   console.log("Backend Connected");
 });
+
+// app.listen(PORT, () => {
+//   console.log("Backend Connected");
+// });
