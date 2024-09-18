@@ -1,26 +1,36 @@
 import express from "express";
 import mysql from "mysql2";
 import cors from "cors";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import fs from "fs"
+// const fs = require('fs');
 
 dotenv.config();
 
-
 const app = express();
-
 app.use(express.json());
-// app.use(cors());
 
-app.use(cors({
-  origin: 'https://mini-expenses-tracker.netlify.app'
-}));
+app.use(
+  cors({
+    // origin: "https://mini-expenses-tracker.netlify.app",
+    origin: "*",
 
-const PORT = 17863;
+  })
+);
+
+
+const PORT = process.env.PORT;
+console.log(PORT);
+
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  ssl: {
+    rejectUnauthorized: true,
+    ca: fs.readFileSync("./ca.pem").toString(),
+  }
 });
 
 db.connect((err) => {
@@ -32,6 +42,7 @@ db.connect((err) => {
 });
 
 app.get("/", (req, res) => {
+  console.log("history page");
   const q =
     "SELECT *, 'budget' AS source FROM budget_list UNION SELECT *, 'expenses' AS source FROM expenses_list ORDER BY date DESC LIMIT 15";
   db.query(q, (err, data) => {
@@ -128,21 +139,21 @@ app.delete("/:source/:id", (req, res) => {
 app.get("/edit/:id", (req, res) => {
   const { id } = req.params;
   const { type } = req.query;
-  
-  if(type === "budget"){
+
+  if (type === "budget") {
     const q = "SELECT * FROM budget_list WHERE id = ?";
 
     db.query(q, [id], (err, data) => {
       if (err) return res.json(err);
       return res.json(data);
-    })
-  } else if(type === "expenses"){
+    });
+  } else if (type === "expenses") {
     const q = "SELECT * FROM expenses_list WHERE id = ?";
 
     db.query(q, [id], (err, data) => {
       if (err) return res.json(err);
       return res.json(data);
-    })
+    });
   }
 });
 
@@ -150,40 +161,26 @@ app.put("/edit/:id", (req, res) => {
   const { id } = req.params;
   const { type } = req.query;
 
-  
-
-  if(type === "budget"){
-    const values = [
-      req.body.name,
-      req.body.amount,
-      id
-    ]
-    const q = "UPDATE budget_list SET `name` = ?, `amount` = ?, `date` = NOW() WHERE id = ?"
+  if (type === "budget") {
+    const values = [req.body.name, req.body.amount, id];
+    const q =
+      "UPDATE budget_list SET `name` = ?, `amount` = ?, `date` = NOW() WHERE id = ?";
     db.query(q, values, (err, data) => {
-      if(err) res.json(err)
-        return res.json("Updated Successsfully");
-    })
-
-  } else if(type === "expenses"){
-    const values = [
-      req.body.name,
-      -req.body.amount,
-      id
-    ]
-    const q = "UPDATE expenses_list SET `name` = ?, `amount` = ?, `date` = NOW() WHERE id = ?"
+      if (err) res.json(err);
+      return res.json("Updated Successsfully");
+    });
+  } else if (type === "expenses") {
+    const values = [req.body.name, -req.body.amount, id];
+    const q =
+      "UPDATE expenses_list SET `name` = ?, `amount` = ?, `date` = NOW() WHERE id = ?";
     // console.log(values)
     db.query(q, values, (err, data) => {
-      if(err) res.json(err)
-        return res.json("Updated Successsfully");
-    })
+      if (err) res.json(err);
+      return res.json("Updated Successsfully");
+    });
   }
-
 });
 
-app.listen(process.env.PORT || PORT, () => {
+app.listen(PORT, () => {
   console.log("Backend Connected");
 });
-
-// app.listen(PORT, () => {
-//   console.log("Backend Connected");
-// });
