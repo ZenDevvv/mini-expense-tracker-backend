@@ -2,7 +2,7 @@ import express from "express";
 import mysql from "mysql2";
 import cors from "cors";
 import dotenv from "dotenv";
-import fs from "fs"
+import fs from "fs";
 
 dotenv.config();
 
@@ -13,11 +13,8 @@ app.use(
   cors({
     // origin: "https://mini-expenses-tracker.netlify.app",
     origin: "*",
-
   })
 );
-
-
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -28,7 +25,7 @@ const db = mysql.createConnection({
   ssl: {
     rejectUnauthorized: true,
     ca: fs.readFileSync(process.env.DB_CACERT),
-  }
+  },
 });
 
 db.connect((err) => {
@@ -179,9 +176,7 @@ app.put("/edit/:id", (req, res) => {
   }
 });
 
-
-app.listen(process.env.PORT || 8800, () => {
-  console.log("Backend Connected");
-console.log(process.env.DB_port)
-
+const port = process.env.PORT || 8800;
+app.listen(port, () => {
+  console.log(`Backend connected and listening on port ${port}`);
 });
