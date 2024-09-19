@@ -3,7 +3,6 @@ import mysql from "mysql2";
 import cors from "cors";
 import dotenv from "dotenv";
 import fs from "fs"
-// const fs = require('fs');
 
 dotenv.config();
 
@@ -27,8 +26,8 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
   ssl: {
-    rejectUnauthorized: false,
-    ca: fs.readFileSync("./ca.pem").toString(),
+    rejectUnauthorized: true,
+    ca: fs.readFileSync(process.env.DB_CACERT),
   }
 });
 
@@ -180,6 +179,9 @@ app.put("/edit/:id", (req, res) => {
   }
 });
 
-app.listen(process.env.DB_PORT, () => {
+
+app.listen(process.env.PORT || 8800, () => {
   console.log("Backend Connected");
+console.log(process.env.DB_port)
+
 });
