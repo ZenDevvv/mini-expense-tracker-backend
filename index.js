@@ -37,7 +37,7 @@ db.connect((err) => {
 });
 
 app.get("/", (req, res) => {
-  console.log("history page");
+  console.log("History page accessed by:", req.ip);
   const q =
     "SELECT *, 'budget' AS source FROM budget_list UNION SELECT *, 'expenses' AS source FROM expenses_list ORDER BY date DESC LIMIT 15";
   db.query(q, (err, data) => {
@@ -176,7 +176,7 @@ app.put("/edit/:id", (req, res) => {
   }
 });
 
-const port = process.env.PORT || 8800;
-app.listen(port, () => {
+const port = process.env.PORT;
+app.listen(port, '0.0.0.0', () => {
   console.log(`Backend connected and listening on port ${port}`);
 });
