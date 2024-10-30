@@ -11,11 +11,11 @@ app.use(express.json());
 
 app.use(
   cors({
-    // origin: "https://mini-expenses-tracker.netlify.app",
-    origin: "*",
+    origin: "https://mini-expenses-tracker.netlify.app",
+    // origin: "*",
   })
 );
-
+ 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -176,7 +176,7 @@ app.put("/edit/:id", (req, res) => {
   }
 });
 
-const port = process.env.PORT;
+const port = process.env.PORT || 8800;
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend connected and listening on port ${port}`);
 });
